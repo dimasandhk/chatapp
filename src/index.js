@@ -16,15 +16,13 @@ io.on("connection", (socket) => {
 	console.log("New Websocket Connection");
 
 	socket.emit("message", "Welcome!");
+	socket.broadcast.emit("message", "A New User has Joined!");
+
 	socket.on("sendMessage", (msg) => {
 		io.emit("message", msg);
 	});
-	// socket.emit("countUpdated", count);
-	// socket.on("increment", () => {
-	// 	count++;
-	// 	// socket.emit("countUpdated", count);
-	// 	io.emit("countUpdated", count);
-	// });
+
+	socket.on("disconnect", () => io.emit("message", "A User has Left"));
 });
 
 server.listen(PORT, () => console.log(`Up on port ${PORT}`));
