@@ -11,16 +11,20 @@ const PORT = process.env.PORT || 3030;
 
 app.use(express.static(path.join(__dirname, "../public")));
 
-let count = 0;
+// let count = 0;
 io.on("connection", (socket) => {
 	console.log("New Websocket Connection");
 
-	socket.emit("countUpdated", count);
-	socket.on("increment", () => {
-		count++;
-		// socket.emit("countUpdated", count);
-		io.emit("countUpdated", count);
+	socket.emit("message", "Welcome!");
+	socket.on("sendMessage", (msg) => {
+		io.emit("message", msg);
 	});
+	// socket.emit("countUpdated", count);
+	// socket.on("increment", () => {
+	// 	count++;
+	// 	// socket.emit("countUpdated", count);
+	// 	io.emit("countUpdated", count);
+	// });
 });
 
 server.listen(PORT, () => console.log(`Up on port ${PORT}`));
