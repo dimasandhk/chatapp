@@ -9,20 +9,31 @@ const input = document.querySelector("input");
 
 form.addEventListener("submit", (e) => {
 	e.preventDefault();
-	socket.emit("sendMessage", input.value);
+
+	input.setAttribute("disabled", "disabled");
+
+	socket.emit("sendMessage", input.value, (scs) => {
+		input.removeAttribute("disabled");
+		input.value = "";
+		input.focus();
+
+		console.log(scs);
+	});
 });
 
 const locationBtn = document.getElementById("sendLocation");
 locationBtn.addEventListener("click", () => {
 	if (!navigator.geolocation) return alert("Cannot use location feature");
 
+	locationBtn.setAttribute("disabled", "disabled");
 	navigator.geolocation.getCurrentPosition((pos) => {
 		const obj = {
 			lat: pos.coords.latitude,
 			long: pos.coords.longitude
 		};
 
-		socket.emit("sendLocation", obj);
+		locationBtn.removeAttribute("disabled");
+		socket.emit("sendLocation", obj, (scs) => console.log(scs));
 	});
 });
 

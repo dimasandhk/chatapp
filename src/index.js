@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+
+const Filter = require("bad-words");
 const socketio = require("socket.io");
 
 const http = require("http");
@@ -18,12 +20,15 @@ io.on("connection", (socket) => {
 	socket.emit("message", "Welcome!");
 	socket.broadcast.emit("message", "A New User has Joined!");
 
-	socket.on("sendMessage", (msg) => {
-		io.emit("message", msg);
+	socket.on("sendMessage", (msg, callback) => {
+		const filtered = new Filter();
+		io.emit("message", filtered.clean(msg));
+		callback("Sent!");
 	});
 
-	socket.on("sendLocation", (position) => {
+	socket.on("sendLocation", (position, callback) => {
 		io.emit("message", `https://google.com/maps?q=${position.lat},${position.long}`);
+		callback("Location shared!");
 	});
 
 	socket.on("disconnect", () => io.emit("message", "A User has Left"));
