@@ -12,6 +12,20 @@ form.addEventListener("submit", (e) => {
 	socket.emit("sendMessage", input.value);
 });
 
+const locationBtn = document.getElementById("sendLocation");
+locationBtn.addEventListener("click", () => {
+	if (!navigator.geolocation) return alert("Cannot use location feature");
+
+	navigator.geolocation.getCurrentPosition((pos) => {
+		const obj = {
+			lat: pos.coords.latitude,
+			long: pos.coords.longitude
+		};
+
+		socket.emit("sendLocation", obj);
+	});
+});
+
 // socket.on("countUpdated", (count) => {
 // 	console.log(count);
 // });
