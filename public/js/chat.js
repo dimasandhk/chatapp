@@ -5,12 +5,15 @@ const locationTemplate = document.getElementById("location-message-template").in
 socket.on("message", (msg) => {
 	console.log(msg);
 
-	const html = Mustache.render(msgTemplate, { msg });
+	const html = Mustache.render(msgTemplate, {
+		msg: msg.text,
+		createdAt: moment(msg.createdAt).format("H:mm")
+	});
 	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
 });
 
 socket.on("locationMessage", (url) => {
-	const html = Mustache.render(locationTemplate, { url });
+	const html = Mustache.render(locationTemplate, { url: url.text });
 	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
 });
 
