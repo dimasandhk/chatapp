@@ -1,7 +1,17 @@
 const socket = io();
 
+const msgTemplate = document.getElementById("message-template").innerHTML;
+const locationTemplate = document.getElementById("location-message-template").innerHTML;
 socket.on("message", (msg) => {
 	console.log(msg);
+
+	const html = Mustache.render(msgTemplate, { msg });
+	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
+});
+
+socket.on("locationMessage", (url) => {
+	const html = Mustache.render(locationTemplate, { url });
+	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
 });
 
 const form = document.querySelector("form");
