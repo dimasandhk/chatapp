@@ -12,6 +12,7 @@ const path = require("path");
 const PORT = process.env.PORT || 3030;
 
 const { generateMessage } = require("./utils/messages");
+const { addUser, removeUser, getUser, getUsersInRoom } = require("./utils/users");
 
 app.use(express.static(path.join(__dirname, "../public")));
 
@@ -19,12 +20,20 @@ app.use(express.static(path.join(__dirname, "../public")));
 io.on("connection", (socket) => {
 	console.log("New Websocket Connection");
 
-	socket.on("join", ({ username, room }) => {
-		const broadcastRoom = socket.broadcast.to(room);
-		socket.join(room);
+	// !!! Socket Room
+	socket.on("join", (optData, callback) => {
+		const { error, user } = addUser({ id: socket.id, ...optData });
+		if (error) {
+			console.log(error);
+			return callback(error);
+		}
+
+		socket.join(user.room);
 
 		socket.emit("message", generateMessage("Welcome!"));
-		broadcastRoom.emit("message", generateMessage(`${username} has Joined!`));
+		socket.broadcast.to(user.room).emit("message", generateMessage(`${user.username} has joined!`));
+
+		callback();
 	});
 
 	socket.on("sendMessage", (msg, callback) => {
@@ -41,7 +50,10 @@ io.on("connection", (socket) => {
 		callback("Location shared!");
 	});
 
-	socket.on("disconnect", () => io.emit("message", generateMessage("A User has Left")));
+	socket.on("disconnect", () => {
+		const user = removeUser(socket.id);
+		if (user) io.to(user.room).emit("message", generateMessage(`${user.username} has Left`));
+	});
 });
 
 server.listen(PORT, () => console.log(`Up on port ${PORT}`));
