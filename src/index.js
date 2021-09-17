@@ -30,22 +30,28 @@ io.on("connection", (socket) => {
 
 		socket.join(user.room);
 
-		socket.emit("message", generateMessage("Welcome!"));
-		socket.broadcast.to(user.room).emit("message", generateMessage(`${user.username} has joined!`));
+		socket.emit("message", generateMessage("Chat System (☞ﾟヮﾟ)☞", "Welcome!"));
+		socket.broadcast
+			.to(user.room)
+			.emit("message", generateMessage("Chat System (☞ﾟヮﾟ)☞", `${user.username} has joined!`));
 
 		callback();
 	});
 
 	socket.on("sendMessage", (msg, callback) => {
+		const user = getUser(socket.id);
 		const filtered = new Filter();
-		io.emit("message", generateMessage(filtered.clean(msg)));
+
+		io.to(user.room).emit("message", generateMessage(user.username, filtered.clean(msg)));
 		callback("Sent!");
 	});
 
 	socket.on("sendLocation", (position, callback) => {
-		io.emit(
+		const user = getUser(socket.id);
+
+		io.to(user.room).emit(
 			"locationMessage",
-			generateMessage(`https://google.com/maps?q=${position.lat},${position.long}`)
+			generateMessage(user.username, `https://google.com/maps?q=${position.lat},${position.long}`)
 		);
 		callback("Location shared!");
 	});
