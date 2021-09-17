@@ -2,6 +2,10 @@ const socket = io();
 
 const msgTemplate = document.getElementById("message-template").innerHTML;
 const locationTemplate = document.getElementById("location-message-template").innerHTML;
+
+// Query Strings
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+
 socket.on("message", (msg) => {
 	console.log(msg);
 
@@ -52,3 +56,5 @@ locationBtn.addEventListener("click", () => {
 		socket.emit("sendLocation", obj, (scs) => console.log(scs));
 	});
 });
+
+socket.emit("join", { username, room });
