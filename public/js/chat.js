@@ -13,7 +13,10 @@ socket.on("message", (msg) => {
 });
 
 socket.on("locationMessage", (url) => {
-	const html = Mustache.render(locationTemplate, { url: url.text });
+	const html = Mustache.render(locationTemplate, {
+		url: url.text,
+		createdAt: moment(url.createdAt).format("H:mm")
+	});
 	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
 });
 
@@ -49,13 +52,3 @@ locationBtn.addEventListener("click", () => {
 		socket.emit("sendLocation", obj, (scs) => console.log(scs));
 	});
 });
-
-// socket.on("countUpdated", (count) => {
-// 	console.log(count);
-// });
-
-// const btn = document.getElementById("increment");
-// btn.addEventListener("click", () => {
-// 	console.log("objecclickt");
-// 	socket.emit("increment");
-// });

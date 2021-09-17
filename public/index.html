@@ -5,25 +5,41 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon" />
+		<link rel="stylesheet" href="/css/styles.css" />
 	</head>
 	<body>
-		<h1>Hello World</h1>
+		<div class="chat">
+			<div class="chat__sidebar"></div>
+			<div class="chat__main">
+				<div id="messages" class="chat__messages"></div>
 
-		<div id="messages"></div>
-
-		<form>
-			<input type="text" />
-		</form>
-		<button id="sendLocation">Send Location</button>
+				<div class="compose">
+					<form>
+						<input type="text" placeholder="Messages" />
+						<button>Send</button>
+					</form>
+					<button id="sendLocation">Send Location</button>
+				</div>
+			</div>
+		</div>
 
 		<script id="message-template" type="text/html">
-			<div>
-				<p>{{createdAt}} {{msg}}</p>
+			<div class="message">
+				<p>
+					<span class="message__name">Some User Name</span>
+					<span class="message__meta">{{createdAt}}</span>
+				</p>
+				<p>{{msg}}</p>
 			</div>
 		</script>
 
 		<script id="location-message-template" type="text/html">
 			<div>
+				<p>
+					<span class="message__name">Some User Name</span>
+					<span class="message__meta">{{createdAt}}</span>
+				</p>
 				<p><a href="{{url}}" target="_blank">My Locations</a></p>
 			</div>
 		</script>
