@@ -2,6 +2,7 @@ const socket = io();
 
 const msgTemplate = document.getElementById("message-template").innerHTML;
 const locationTemplate = document.getElementById("location-message-template").innerHTML;
+const sidebarTemplate = document.getElementById("sidebar-template").innerHTML;
 
 // Query Strings
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
@@ -24,6 +25,15 @@ socket.on("locationMessage", (url) => {
 		createdAt: moment(url.createdAt).format("H:mm")
 	});
 	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
+});
+
+socket.on("roomData", ({ room, users }) => {
+	const html = Mustache.render(sidebarTemplate, {
+		room,
+		users
+	});
+
+	document.getElementById("sidebar").innerHTML = html;
 });
 
 const form = document.querySelector("form");

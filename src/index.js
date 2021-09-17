@@ -23,17 +23,21 @@ io.on("connection", (socket) => {
 	// !!! Socket Room
 	socket.on("join", (optData, callback) => {
 		const { error, user } = addUser({ id: socket.id, ...optData });
-		if (error) {
-			console.log(error);
-			return callback(error);
-		}
+		if (error) return callback(error);
 
+		const broadcastRoom = socket.broadcast.to(user.room);
 		socket.join(user.room);
 
 		socket.emit("message", generateMessage("Chat System (☞ﾟヮﾟ)☞", "Welcome!"));
-		socket.broadcast
-			.to(user.room)
-			.emit("message", generateMessage("Chat System (☞ﾟヮﾟ)☞", `${user.username} has joined!`));
+		broadcastRoom.emit(
+			"message",
+			generateMessage("Chat System (☞ﾟヮﾟ)☞", `${user.username} has joined!`)
+		);
+
+		io.to(user.room).emit("roomData", {
+			room: user.room,
+			users: getUsersInRoom(user.room)
+		});
 
 		callback();
 	});
@@ -58,7 +62,13 @@ io.on("connection", (socket) => {
 
 	socket.on("disconnect", () => {
 		const user = removeUser(socket.id);
-		if (user) io.to(user.room).emit("message", generateMessage(`${user.username} has Left`));
+		if (user) {
+			io.to(user.room).emit("message", generateMessage(`${user.username} has Left`));
+			io.to(user.room).emit("roomData", {
+				room: user.room,
+				users: getUsersInRoom(user.room)
+			});
+		}
 	});
 });
 
