@@ -3,19 +3,42 @@ const socket = io();
 const msgTemplate = document.getElementById("message-template").innerHTML;
 const locationTemplate = document.getElementById("location-message-template").innerHTML;
 const sidebarTemplate = document.getElementById("sidebar-template").innerHTML;
+const $messages = document.getElementById("messages");
 
 // Query Strings
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
-socket.on("message", (msg) => {
-	console.log(msg);
+const autoscroll = () => {
+	// New message element
+	const $newMessage = $messages.lastElementChild;
 
+	// Height of the new message
+	const newMessageStyles = getComputedStyle($newMessage);
+	const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+	const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+
+	// Visible height
+	const visibleHeight = $messages.offsetHeight;
+
+	// Height of messages container
+	const containerHeight = $messages.scrollHeight;
+
+	// How far have I scrolled?
+	const scrollOffset = $messages.scrollTop + visibleHeight;
+
+	if (containerHeight - newMessageHeight <= scrollOffset) {
+		$messages.scrollTop = $messages.scrollHeight;
+	}
+};
+
+socket.on("message", (msg) => {
 	const html = Mustache.render(msgTemplate, {
-		username: msg.username || "Admin",
+		username: msg.username,
 		msg: msg.text,
 		createdAt: moment(msg.createdAt).format("H:mm")
 	});
 	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
+	autoscroll();
 });
 
 socket.on("locationMessage", (url) => {
@@ -25,6 +48,7 @@ socket.on("locationMessage", (url) => {
 		createdAt: moment(url.createdAt).format("H:mm")
 	});
 	document.getElementById("messages").insertAdjacentHTML("beforeend", html);
+	autoscroll();
 });
 
 socket.on("roomData", ({ room, users }) => {
@@ -48,8 +72,6 @@ form.addEventListener("submit", (e) => {
 		input.removeAttribute("disabled");
 		input.value = "";
 		input.focus();
-
-		console.log(scs);
 	});
 });
 
