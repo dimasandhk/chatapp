@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-		<link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon" />
-		<link rel="stylesheet" href="/css/styles.css" />
-	</head>
-	<body>
-		<div class="centered-form">
-			<div class="centered-form__box">
-				<h1>Join</h1>
-				<form action="./chat.html">
-					<label>Display Name</label>
-					<input
-						type="text"
-						placeholder="Display Name"
-						id="displayInput"
-						name="username"
-						required
-					/>
-					<label>Room</label>
-					<input type="text" name="room" placeholder="Room" required />
-					<button>Join</button>
-				</form>
-			</div>
-		</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script> -->
+    <title>Kelompok 7G Projek 3 Integrasi Sistem Kelas B</title>
+    <link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="centered-form">
+      <div class="centered-form__box">
+        <h1>Join</h1>
+        <form action="./chat.html">
+          <label>Display Name</label>
+          <input
+            type="text"
+            placeholder="Display Name"
+            id="displayInput"
+            name="username"
+            required
+          />
+          <label>Room</label>
+          <input type="text" name="room" placeholder="Room" required />
+          <button class="join-btn">Join</button>
+        </form>
+      </div>
+    </div>
 
-		<script>
-			document.querySelector("#displayInput").focus();
-		</script>
-	</body>
+    <script>
+      document.querySelector("#displayInput").focus();
+    </script>
+  </body>
 </html>
